@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="global" /> 
+
+	<package name="outerpages" namespace="/out" extends="struts-default,tiles-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+		</result-types>
+		<action name="displaylogin" class="com.wtr.ui.action.Login" method="displayLogin">
+			<result type="tiles" name="success">login</result>
+		</action>
+		<action name="displayenvconfig" class="com.wtr.ui.action.EnvConfig" method="displayEnvConfig">
+			<result type="tiles" name="success">envconfig</result>
+		</action>				
+		<action name="login" class="com.wtr.ui.action.Login" method="authenticate">
+			<result type="chain" name="patienthome">
+				<param name="actionName">displaypatientappointments</param>
+            	<param name="namespace">/secure</param>
+			</result>
+			<result type="chain" name="doctorhome">
+				<param name="actionName">displaydoctorhome</param>
+            	<param name="namespace">/secure</param>
+			</result>
+			<result type="chain" name="labtechnicianhome">
+				<param name="actionName">displaylabtechnicianhome</param>
+            	<param name="namespace">/secure</param>
+			</result>
+			<result type="chain" name="error">
+				<param name="actionName">displaylogin</param>
+            	<param name="namespace">/out</param>
+            </result>
+			<result type="redirectAction" name="gotochangepassword">
+				<param name="actionName">displaychangepassword</param>
+            	<param name="namespace">/secure</param>
+			</result>	
+		</action>
+	</package>
+	
+	<package name="securedpages" namespace="/secure" extends="struts-default,tiles-default,json-default">
+		<result-types>
+			<result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+			<result-type name="imageResult" class="com.wtr.ui.util.CustomImageBytesResult"/>
+			<result-type name="reportResult" class="com.wtr.ui.util.CustomReportBytesResult"/>
+		</result-types>
+		
+		<interceptors>      
+			<interceptor name="wtrLicenseValidation" class="com.wtr.ui.interceptor.LicenseValidationInterceptor"></interceptor>
+			<interceptor name="wtrlogging" class="com.wtr.ui.interceptor.LoggingInterceptor"></interceptor>
+			<interceptor name="wtrauthentication" class="com.wtr.ui.interceptor.AuthenticationInterceptor"></interceptor>			
+			<interceptor-stack name="authStack">
+				<interceptor-ref name="wtrLicenseValidation" />
+				<interceptor-ref name="wtrlogging" />
+				<interceptor-ref name="wtrauthentication" />				
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="authStack"></default-interceptor-ref>
+		
+		<global-results>
+         	<result type="redirectAction" name="backtologin">
+				<param name="actionName">displaylogin</param>
+            	<param name="namespace">/out</param>
+            </result>            
+  		</global-results>
+  		
+		<action name="displaypatienthome" class="com.wtr.ui.action.PatientHomePage" method="displaypatientHome">
+			<result type="tiles" name="success">patienthome</result>
+		</action>
+		<action name="displaydoctorhome" class="com.wtr.ui.action.DoctorHomePage" method="displaydoctorHome">
+		    <result type="tiles" name="success">doctorhome</result>
+		</action>
+		<action name="displaylabtechnicianhome" class="com.wtr.ui.action.HomePage" method="displaylabtechnicianHome">
+		    <result type="tiles" name="success">labtechnicianhome</result>
+		</action>
+		<action name="displayprofile" class="com.wtr.ui.action.ProfilePage" method="displayProfile">
+		    <result type="tiles" name="success">patientprofile</result>
+		</action>
+		<action name="ProfilePage" class="com.wtr.ui.action.ProfilePage">
+		    <result type="imageResult" name="success"/>
+		</action>
+		<action name="ImageAction" class="com.wtr.ui.action.ImageAction">
+		    <result type="imageResult" name="success"/>
+		</action>
+		<action name="ReportAction" class="com.wtr.ui.action.ReportAction">
+		    <result type="reportResult" name="success"/>
+		</action>
+		<action name="displaymanagepatients" class="com.wtr.ui.action.ManagePatients" method="displayManagePatients">
+		    <result type="tiles" name="success">managepatients</result>
+		</action>
+		<action name="populatedoctorspatientdetails" class="com.wtr.ui.action.ManagePatients" method="populateDoctorsPatientDetails">
+		    <result type="json"/>
+		</action>
+		<action name="displaypatientappointments" class="com.wtr.ui.action.PatientAppointments" method="displayPatientAppointments">
+		    <result type="tiles" name="success">patientappointments</result>
+		</action>
+		<action name="populateAppointmentDetails" class="com.wtr.ui.action.PatientAppointments" method="populateAppointmentDetails">
+		    <result type="json"/>
+		</action>
+		<action name="displaypatientreports" class="com.wtr.ui.action.PatientReports" method="displayPatientReports">
+		    <result type="tiles" name="success">patientreports</result>
+		</action>
+		<action name="populateReportDetails" class="com.wtr.ui.action.PatientReports" method="populateReportInfoDetails">
+		    <result type="json"/>
+		</action>
+		<action name="displayviewreport" class="com.wtr.ui.action.PatientReports" method="displayViewReport">	   
+		</action>
+		<action name="displaypaymentreport" class="com.wtr.ui.action.DoctorHomePage" method="displayPymtRpt">
+		    <result type="tiles" name="success">displaypymtrpt</result>
+		    <result type="chain" name="error">displaydoctorhome</result>
+		</action>
+		<action name="displaysearchedpatients" class="com.wtr.ui.action.DoctorHomePage" method="displaySearchedPatientsList">
+		    <result type="tiles" name="success">searchedpatientslist</result>
+		    <result type="chain" name="error">displaydoctorhome</result>
+		    <result type="chain" name="single">displaysearchedpatient</result>
+		</action>	
+		<action name="displaysearchedpatient" class="com.wtr.ui.action.DoctorHomePage" method="displaySearchedPatient">
+		    <result type="tiles" name="success">searchedpatient</result>
+		</action>
+		<action name="populatepatientappointments" class="com.wtr.ui.action.DoctorHomePage" method="populatePatientAppointments">
+		    <result type="json"/>
+		</action>
+		<action name="displaysearchedpatientreports" class="com.wtr.ui.action.DoctorHomePage" method="displaySearchedPatientReports">
+		    <result type="tiles" name="success">searchedpatientreports</result>
+		</action>
+		<action name="displayreportcomments" class="com.wtr.ui.action.DoctorHomePage" method="displayReportComments">
+		    <result type="tiles" name="success">reportcomments</result>
+		</action>
+		<action name="addreportcomments" class="com.wtr.ui.action.DoctorHomePage" method="addReportComments">
+		    <result type="json"/>
+		</action>
+		<action name="changepassword" class="com.wtr.ui.action.ChangePassword" method="changePassword">						
+			<result type="redirectAction" name="success">
+				<param name="actionName">displaylogin</param>
+            	<param name="namespace">/out</param>
+            	<param name="successMessage">Password change successful.</param>
+			</result>			
+			<result type="chain" name="error" >displaychangepassword</result>
+		</action>
+		<action name="displaychangepassword" class="com.wtr.ui.action.ChangePassword" method="displayChangePassword">			
+			<result type="tiles" name="patient">changepassword</result>
+			<result type="tiles" name="doctor">doctorchangepassword</result>
+		</action>
+	</package>
+	
+</struts>

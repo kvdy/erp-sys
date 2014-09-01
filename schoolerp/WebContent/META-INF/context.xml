@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+<Parameter name="sch.log4j.log.level" value="DEBUG"  override="false"/>
+<Parameter name="sch.log4j.file.path" value="/Users/kvdy/temp/log/sch/scherpui.log"  override="false"/>
+<Environment name="env" value="dev" type="java.lang.String" override="false"/>
+<Environment name="templates_path" value="c:\\temp\\templates\\" type="java.lang.String" override="false"/>
+<Environment name="reports_path" value="c:\\temp\\reports\\" type="java.lang.String" override="false"/>
+<Environment name="photos_path" value="c:\\temp\\photos\\" type="java.lang.String" override="false"/> 
+<!-- <Environment name="photos_path" value="c:\\workspace_wtr\\wtradminui\\WebContent\\images\\users\\" type="java.lang.String" override="false"/> -->
+<Resource name="jdbc/schooldb" 
+            auth="Container" 
+            type="javax.sql.DataSource" 
+            username="schadmusr" 
+            password="schadmpass" 
+            driverClassName="com.mysql.jdbc.Driver" 
+            url="jdbc:mysql://localhost/schooldb" 
+            maxWait="16000"
+            maxActive="100" 
+            maxIdle="30" 
+            minIdle="1" 
+            initialSize="10" 
+            removeAbandoned="true"   
+            autoReconnect="true"         
+            /> 
+</Context>

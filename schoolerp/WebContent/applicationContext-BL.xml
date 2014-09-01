@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+		
+	xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="dataSource" 
+		class="org.springframework.jndi.JndiObjectFactoryBean"> 
+        <property name="jndiName" value="java:comp/env/jdbc/schooldb" /> 
+    </bean> 
+
+	<!-- Hibernate session factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>user.hbm.xml</value>
+				<value>auditinfo.hbm.xml</value>				
+				<value>group.hbm.xml</value>
+				<value>groupuser.hbm.xml</value>
+				<value>featureright.hbm.xml</value>
+				<value>groupfeatureright.hbm.xml</value>
+				<value>doctor.hbm.xml</value>
+				<value>patient.hbm.xml</value>
+				<value>lab.hbm.xml</value>
+				<value>labtechnician.hbm.xml</value>
+				<value>contact.hbm.xml</value>
+				<value>referral.hbm.xml</value>
+				<value>appointment.hbm.xml</value>				
+				<value>reporttype.hbm.xml</value>
+				<value>reportinfo.hbm.xml</value>				
+				<value>groupreporttype.hbm.xml</value>
+				<value>keey.hbm.xml</value>
+				<value>reporttypekey.hbm.xml</value>
+				<value>reportvariable.hbm.xml</value>
+				<value>payment.hbm.xml</value>
+				<value>reportcomment.hbm.xml</value>				
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.max_fetch_depth">10</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- transaction management -->	
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactory" ref="sessionFactory" ></property>
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager" />
+
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+
+	<bean id="userService" class="com.wtr.bl.services.impl.UserServiceImpl">
+		<property name="userDAO" ref="userDAO"></property>			
+	</bean>
+	
+	<bean id="auditInfoService" class="com.wtr.bl.services.impl.AuditInfoServiceImpl">
+		<property name="auditInfoDAO" ref="auditInfoDAO"></property>			
+	</bean>
+	
+	<bean id="groupService" class="com.wtr.bl.services.impl.GroupServiceImpl">
+		<property name="groupDAO" ref="groupDAO"></property>			
+	</bean>
+	
+	<bean id="groupUserService" class="com.wtr.bl.services.impl.GroupUserServiceImpl">
+		<property name="groupUserDAO" ref="groupUserDAO"></property>			
+		<property name="userDAO" ref="userDAO"></property>
+		<property name="groupDAO" ref="groupDAO"></property>
+	</bean>	
+	
+	<bean id="featureRightService" class="com.wtr.bl.services.impl.FeatureRightServiceImpl">
+		<property name="featureRightDAO" ref="featureRightDAO"></property>
+	</bean>
+
+	<bean id="groupFeatureRightService" class="com.wtr.bl.services.impl.GroupFeatureRightServiceImpl">
+		<property name="groupFeatureRightDAO" ref="groupFeatureRightDAO"></property>			
+		<property name="featureRightDAO" ref="featureRightDAO"></property>
+		<property name="groupDAO" ref="groupDAO"></property>
+	</bean>	
+
+	<bean id="doctorService" class="com.wtr.bl.services.impl.DoctorServiceImpl">
+		<property name="doctorDAO" ref="doctorDAO"></property>			
+	</bean>
+	
+	<bean id="patientService" class="com.wtr.bl.services.impl.PatientServiceImpl">
+		<property name="patientDAO" ref="patientDAO"></property>
+		<property name="doctorDAO" ref="doctorDAO"></property>					
+	</bean>
+
+	<bean id="labService" class="com.wtr.bl.services.impl.LabServiceImpl">
+		<property name="labDAO" ref="labDAO"></property>			
+	</bean>	
+	
+	<bean id="labTechnicianService" class="com.wtr.bl.services.impl.LabTechnicianServiceImpl">		
+		<property name="labTechnicianDAO" ref="labTechnicianDAO"></property>			
+	</bean>	
+	
+	<bean id="contactService" class="com.wtr.bl.services.impl.ContactServiceImpl">		
+		<property name="contactDAO" ref="contactDAO"></property>	
+		<property name="userDAO" ref="userDAO"></property>	
+		<property name="labDAO" ref="labDAO"></property>
+	</bean>	
+	
+	<bean id="referralService" class="com.wtr.bl.services.impl.ReferralServiceImpl">		
+		<property name="referralDAO" ref="referralDAO"></property>	
+	</bean>	
+	
+	<bean id="appointmentService" class="com.wtr.bl.services.impl.AppointmentServiceImpl">		
+		<property name="appointmentDAO" ref="appointmentDAO"></property>	
+	</bean>	
+	
+	<bean id="reportTypeService" class="com.wtr.bl.services.impl.ReportTypeServiceImpl">		
+		<property name="reportTypeDAO" ref="reportTypeDAO"></property>	
+	</bean>	
+	
+	<bean id="reportInfoService" class="com.wtr.bl.services.impl.ReportInfoServiceImpl">		
+		<property name="reportInfoDAO" ref="reportInfoDAO"></property>	
+	</bean>	
+	
+	<bean id="groupReportTypeService" class="com.wtr.bl.services.impl.GroupReportTypeServiceImpl">
+		<property name="groupReportTypeDAO" ref="groupReportTypeDAO"></property>			
+		<property name="reportTypeDAO" ref="reportTypeDAO"></property>
+		<property name="groupDAO" ref="groupDAO"></property>
+	</bean>	
+	<bean id="keeyService" class="com.wtr.bl.services.impl.KeeyServiceImpl">
+		<property name="keeyDAO" ref="keeyDAO"></property>			
+	</bean>		
+	<bean id="reportTypeKeyService" class="com.wtr.bl.services.impl.ReportTypeKeyServiceImpl">
+		<property name="reportTypeKeyDAO" ref="reportTypeKeyDAO"></property>
+		<property name="keeyDAO" ref="keeyDAO"></property>			
+	</bean>		
+	<bean id="reportVariableService" class="com.wtr.bl.services.impl.ReportVariableServiceImpl">
+		<property name="reportVariableDAO" ref="reportVariableDAO"></property>			
+	</bean>	
+	<bean id="paymentService" class="com.wtr.bl.services.impl.PaymentServiceImpl">
+		<property name="paymentDAO" ref="paymentDAO"></property>			
+	</bean>	
+	<bean id="reportCommentService" class="com.wtr.bl.services.impl.ReportCommentServiceImpl">
+		<property name="reportCommentDAO" ref="reportCommentDAO"></property>			
+	</bean>	
+		
+	<bean id="userDAO" class="com.wtr.bl.dao.impl.UserDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="auditInfoDAO" class="com.wtr.bl.dao.impl.AuditInfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="groupDAO" class="com.wtr.bl.dao.impl.GroupDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="groupUserDAO" class="com.wtr.bl.dao.impl.GroupUserDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="featureRightDAO" class="com.wtr.bl.dao.impl.FeatureRightDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="groupFeatureRightDAO" class="com.wtr.bl.dao.impl.GroupFeatureRightDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="doctorDAO" class="com.wtr.bl.dao.impl.DoctorDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="patientDAO" class="com.wtr.bl.dao.impl.PatientDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="labDAO" class="com.wtr.bl.dao.impl.LabDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="labTechnicianDAO" class="com.wtr.bl.dao.impl.LabTechnicianDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="contactDAO" class="com.wtr.bl.dao.impl.ContactDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="referralDAO" class="com.wtr.bl.dao.impl.ReferralDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="appointmentDAO" class="com.wtr.bl.dao.impl.AppointmentDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="reportTypeDAO" class="com.wtr.bl.dao.impl.ReportTypeDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="reportInfoDAO" class="com.wtr.bl.dao.impl.ReportInfoDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>	
+	<bean id="groupReportTypeDAO" class="com.wtr.bl.dao.impl.GroupReportTypeDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="keeyDAO" class="com.wtr.bl.dao.impl.KeeyDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="reportTypeKeyDAO" class="com.wtr.bl.dao.impl.ReportTypeKeyDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="reportVariableDAO" class="com.wtr.bl.dao.impl.ReportVariableDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="paymentDAO" class="com.wtr.bl.dao.impl.PaymentDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	<bean id="reportCommentDAO" class="com.wtr.bl.dao.impl.ReportCommentDAOImpl">
+		<property name="hibernateTemplate">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+
+	<bean id="blService" class="com.wtr.bl.services.impl.BLServiceFacadeImpl">
+		<property name="userService">  
+			<ref bean="userService"/>
+		</property>	
+		<property name="auditInfoService">
+			 <ref bean="auditInfoService"/>
+		</property>
+		<property name="groupService">
+		  	<ref bean="groupService"/>
+		</property>
+		<property name="groupUserService">  
+		 	<ref bean="groupUserService"/>
+		</property>
+		<property name="featureRightService">  
+			<ref bean="featureRightService"/>
+		</property>
+		<property name="groupFeatureRightService">  
+			<ref bean="groupFeatureRightService"/>
+		</property>
+		<property name="doctorService">  
+			<ref bean="doctorService"/>
+		</property>
+		<property name="patientService">  
+			<ref bean="patientService"/>
+		</property>
+		<property name="labService">  
+			<ref bean="labService"/>
+		</property>
+		<property name="labTechnicianService">  
+			<ref bean="labTechnicianService"/>
+		</property>
+		<property name="contactService">  
+			<ref bean="contactService"/>
+		</property>
+		<property name="referralService">  
+			<ref bean="referralService"/>
+		</property>
+		<property name="appointmentService">  
+			<ref bean="appointmentService"/>
+		</property>		
+		<property name="reportTypeService">  
+			<ref bean="reportTypeService"/>
+		</property>
+		<property name="reportInfoService">  
+			<ref bean="reportInfoService"/>
+		</property>		
+		<property name="groupReportTypeService">  
+		 	<ref bean="groupReportTypeService"/>
+		</property>	
+		<property name="keeyService">  
+		 	<ref bean="keeyService"/>
+		</property>	
+		<property name="reportTypeKeyService">  
+		 	<ref bean="reportTypeKeyService"/>
+		</property>
+		<property name="reportVariableService">  
+		 	<ref bean="reportVariableService"/>
+		</property>
+		<property name="paymentService">  
+		 	<ref bean="paymentService"/>
+		</property>
+		<property name="reportCommentService">  
+		 	<ref bean="reportCommentService"/>
+		</property>
+
+	</bean>
+	
+</beans>

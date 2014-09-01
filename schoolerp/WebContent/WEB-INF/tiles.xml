@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="baseLayout" template="/jsp/layout.jsp">      
+      <put-attribute name="header" value="/jsp/header.jsp"/>
+      <put-attribute name="menu" value="/jsp/blankmenu.jsp"/>
+      <put-attribute name="lmenu" value="/jsp/blankmenu.jsp"/>
+      <put-attribute name="body"   value="/jsp/login.jsp"/>
+      <put-attribute name="footer"   value="/jsp/footer.jsp"/>
+  	</definition>
+  	<definition name="envconfig" extends="baseLayout">
+		<put-attribute name="body" value="/jsp/envconfig.jsp"/>
+	</definition>
+    <definition name="login" extends="baseLayout">
+      <put-attribute name="body"   value="/jsp/login.jsp"/>
+	</definition>
+    <definition name="changepassword" extends="baseLayout">
+	    <put-attribute name="header" value="/jsp/patientheader.jsp"/>
+  		<put-attribute name="body" value="/jsp/changepassword.jsp"/>
+	</definition>
+    <definition name="doctorchangepassword" extends="baseLayout">
+	    <put-attribute name="header" value="/jsp/doctorheader.jsp"/>
+  		<put-attribute name="body" value="/jsp/doctorchangepassword.jsp"/>
+	</definition>
+    	<definition name="home" extends="baseLayout">
+	    <put-attribute name="header" value="/jsp/header.jsp"/>
+		<put-attribute name="body" value="/jsp/home.jsp"/>
+		<put-attribute name="footer" value="/jsp/footer.jsp"/>
+	</definition>
+	<definition name="patienthome" extends='home'>
+	    <put-attribute name="header" value="/jsp/patientheader.jsp"/>
+	    <put-attribute name="menu" value="/jsp/menu.jsp"/>
+	    <put-attribute name="lmenu" value="/jsp/lmenu.jsp"/>
+		<put-attribute name="body" value="/jsp/patienthome.jsp"/>
+		<put-attribute name="footer" value="/jsp/footer.jsp"/>
+	</definition>
+	<definition name="doctorhome" extends="home">
+	    <put-attribute name="header" value="/jsp/doctorheader.jsp"/>
+		<put-attribute name="body" value="/jsp/doctorhome.jsp"/>
+		<put-attribute name="footer" value="/jsp/footer.jsp"/>
+	</definition>
+	<definition name="searchedpatientslist" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/searchedpatientlist.jsp"/>
+	</definition>
+	<definition name="searchedpatient" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/searchedpatient.jsp"/>
+	</definition>
+	<definition name="searchedpatientreports" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/searchedpatientreports.jsp"/>
+	</definition>
+	<definition name="reportcomments" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/reportcomments.jsp"/>
+	</definition>
+	<definition name="displaypymtrpt" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/paymentreport.jsp"/>
+	</definition>
+	<definition name="patientappointments" extends="patienthome">
+	    <put-attribute name="body" value="/jsp/patientappointments.jsp"/>
+	</definition>
+	<definition name="managepatients" extends="doctorhome">
+	    <put-attribute name="body" value="/jsp/managepatients.jsp"/>
+	</definition>
+	<definition name="patientreports" extends="patienthome">
+	    <put-attribute name="body" value="/jsp/patientreports.jsp"/>
+	</definition>
+	<definition name="patientprofile" extends="home">
+	    <put-attribute name="header" value="/jsp/patientheader.jsp"/>
+<!-- 	    <put-attribute name="menu" value="/jsp/menu.jsp"/> -->
+	    <put-attribute name="body" value="/jsp/patientprofile.jsp"/>
+	</definition>
+</tiles-definitions>
